@@ -186,7 +186,7 @@ const generate = async () => {
         try {
             let resp = await axios({
                 method: 'post',
-                url: `${API_URL}/commandes`,
+                url: `${API_URL}/commandes?depth=0`,
                 data: commandes[i],
                 headers: { 'Authorization': 'JWT ' + TOKEN },
             });
