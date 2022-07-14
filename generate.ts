@@ -183,6 +183,7 @@ const generate = async () => {
     console.log('Sending Commandes...');
 
     for (let i = 0; i < commandes.length; i++) {
+        await Sleep(100);
         try {
             let resp = await axios({
                 method: 'post',
@@ -196,7 +197,7 @@ const generate = async () => {
         }
         catch(e) {
             console.log(`Error while sending commande ${commandes[i].id} with name ${commandes[i].name}\n${e}`);
-            commandes.splice(i, 1);
+            //commandes.splice(i, 1);
             i--;
         }
     }
@@ -225,6 +226,7 @@ const generate = async () => {
     console.log('Sending Tableaus...');
 
     for (let i = 0; i < tableaus.length; i++) {
+        await Sleep(100);
         try {
             let resp = await axios({
                 method: 'post',
@@ -238,7 +240,7 @@ const generate = async () => {
         }
         catch(e) {
             console.log(`Error while sending tableau ${tableaus[i].id} with name ${tableaus[i].designation}\n${e}`);
-            tableaus.splice(i, 1);
+            //tableaus.splice(i, 1);
             i--;
         }
     }
