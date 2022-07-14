@@ -12,6 +12,8 @@ const MIN_EMPLACEMENTS = 7;
 const MAX_EMPLACEMENTS = 20;
 const MIN_COMMANDES = 7;
 const MAX_COMMANDES = 20;
+const MIN_TABLEAUS = 7;
+const MAX_TABLEAUS = 20;
 const TOKEN: string | undefined = process.env.TOKEN;
 
 type Media = {
@@ -39,6 +41,16 @@ type Commande = {
     emplacement: string;
 }
 
+type Tableau = {
+    id: string | null;
+    des: string;
+    designation: string;
+    unite: string;
+    quantite: number;
+    avance: boolean;
+    commande: string;
+}
+
 const clearLine = () => process.stdout.write('\x1b[2K\r');
 const Random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min);
 const Sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -46,7 +58,8 @@ const Sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 console.log(`Target Images: ${TARTGET}`);
 console.log(`Target companies: ${TARTGET}`);
 console.log(`Target emplacements: [${MIN_EMPLACEMENTS}-${MAX_EMPLACEMENTS}] each company`);
-console.log(`Target commandes: [${MIN_COMMANDES}-${MAX_COMMANDES}] each emplacement\n`);
+console.log(`Target commandes: [${MIN_COMMANDES}-${MAX_COMMANDES}] each emplacement`);
+console.log(`Target tableaus: [${MIN_TABLEAUS}-${MAX_TABLEAUS}] each commande\`n`);
 
 const generate = async () => {
 
@@ -184,6 +197,40 @@ const generate = async () => {
     clearLine();
     console.log(`${commandes.length} commandes created !`);
 
+    console.log('Generating Tableaus...');
+    const tableaus: Tableau[] = [];
+
+    for (let i = 0; i < commandes.length; i++) {
+        for (let j = 0; j < Random(MIN_TABLEAUS, MAX_TABLEAUS); j++) {
+            tableaus.push({
+                id: null,
+                des: `D${j}`,
+                designation: "Designation " + Random(1, 100),
+                unite: faker.science.unit().symbol,
+                avance: Random(1, 100) % 2 === 0,
+                commande: commandes[i].id as string,
+                quantite: Random(1, 100),
+            });
+        }
+    }
+
+    console.log(`${tableaus.length} Tableaus Generated !`);
+    console.log('Sending Tableaus...');
+
+    for (let i = 0; i < tableaus.length; i++) {
+        let resp = await axios({
+            method: 'post',
+            url: `${API_URL}/tableaus?depth=0`,
+            data: tableaus[i],
+            headers: { 'Authorization': 'JWT ' + TOKEN },
+        });
+        clearLine();
+        process.stdout.write(`[${(i * 100 / tableaus.length).toFixed(2)}%] - Created tableau ${resp.data.doc.id} with name ${resp.data.doc.designation}\r`);
+        tableaus[i].id = resp.data.doc.id;
+    }
+
+    clearLine();
+    console.log(`${tableaus.length} tableaus created !`);
 
 }
 
