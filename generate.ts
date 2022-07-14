@@ -188,7 +188,6 @@ const generate = async () => {
     console.log('Sending Commandes...');
 
     for (let i = 0; i < commandes.length; i++) {
-        await Sleep(100);
         try {
             let resp = await axios({
                 method: 'post',
@@ -201,7 +200,8 @@ const generate = async () => {
             commandes[i].id = resp.data.doc.id;
         }
         catch(e) {
-            console.log(`Error while sending commande ${commandes[i].id} with name ${commandes[i].name}\n${e}`);
+            clearLine();
+            process.stdout.write(`[${(i * 100 / commandes.length).toFixed(2)}%] - Error with commande ${commandes[i].id} with name ${commandes[i].name}. Retrying\r`);
             //commandes.splice(i, 1);
             i--;
         }
@@ -231,7 +231,6 @@ const generate = async () => {
     console.log('Sending Tableaus...');
 
     for (let i = 0; i < tableaus.length; i++) {
-        await Sleep(100);
         try {
             let resp = await axios({
                 method: 'post',
@@ -244,7 +243,8 @@ const generate = async () => {
             tableaus[i].id = resp.data.doc.id;
         }
         catch(e) {
-            console.log(`Error while sending tableau ${tableaus[i].id} with name ${tableaus[i].designation}\n${e}`);
+            clearLine();
+            process.stdout.write(`[${(i * 100 / tableaus.length).toFixed(2)}%] - Error with tableau ${tableaus[i].id} with name ${tableaus[i].designation}. Retrying\r`);
             //tableaus.splice(i, 1);
             i--;
         }
