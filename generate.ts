@@ -183,15 +183,22 @@ const generate = async () => {
     console.log('Sending Commandes...');
 
     for (let i = 0; i < commandes.length; i++) {
-        let resp = await axios({
-            method: 'post',
-            url: `${API_URL}/commandes`,
-            data: commandes[i],
-            headers: { 'Authorization': 'JWT ' + TOKEN },
-        });
-        clearLine();
-        process.stdout.write(`[${(i * 100 / commandes.length).toFixed(2)}%] - Created commande ${resp.data.doc.id} with name ${resp.data.doc.name}\r`);
-        commandes[i].id = resp.data.doc.id;
+        try {
+            let resp = await axios({
+                method: 'post',
+                url: `${API_URL}/commandes`,
+                data: commandes[i],
+                headers: { 'Authorization': 'JWT ' + TOKEN },
+            });
+            clearLine();
+            process.stdout.write(`[${(i * 100 / commandes.length).toFixed(2)}%] - Created commande ${resp.data.doc.id} with name ${resp.data.doc.name}\r`);
+            commandes[i].id = resp.data.doc.id;
+        }
+        catch(e) {
+            console.log(`Error while sending commande ${commandes[i].id} with name ${commandes[i].name}`);
+            commandes.splice(i, 1);
+            i--;
+        }
     }
 
     clearLine();
@@ -218,15 +225,22 @@ const generate = async () => {
     console.log('Sending Tableaus...');
 
     for (let i = 0; i < tableaus.length; i++) {
-        let resp = await axios({
-            method: 'post',
-            url: `${API_URL}/tableaus?depth=0`,
-            data: tableaus[i],
-            headers: { 'Authorization': 'JWT ' + TOKEN },
-        });
-        clearLine();
-        process.stdout.write(`[${(i * 100 / tableaus.length).toFixed(2)}%] - Created tableau ${resp.data.doc.id} with name ${resp.data.doc.designation}\r`);
-        tableaus[i].id = resp.data.doc.id;
+        try {
+            let resp = await axios({
+                method: 'post',
+                url: `${API_URL}/tableaus?depth=0`,
+                data: tableaus[i],
+                headers: { 'Authorization': 'JWT ' + TOKEN },
+            });
+            clearLine();
+            process.stdout.write(`[${(i * 100 / tableaus.length).toFixed(2)}%] - Created tableau ${resp.data.doc.id} with name ${resp.data.doc.designation}\r`);
+            tableaus[i].id = resp.data.doc.id;
+        }
+        catch(e) {
+            console.log(`Error while sending tableau ${tableaus[i].id} with name ${tableaus[i].designation}`);
+            tableaus.splice(i, 1);
+            i--;
+        }
     }
 
     clearLine();
