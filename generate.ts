@@ -237,7 +237,7 @@ const generate = async () => {
             tableaus[i].id = resp.data.doc.id;
         }
         catch(e) {
-            console.log(`Error while sending tableau ${tableaus[i].id} with name ${tableaus[i].designation}`);
+            console.log(`Error while sending tableau ${tableaus[i].id} with name ${tableaus[i].designation}\n${e}`);
             tableaus.splice(i, 1);
             i--;
         }
