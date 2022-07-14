@@ -195,7 +195,7 @@ const generate = async () => {
             commandes[i].id = resp.data.doc.id;
         }
         catch(e) {
-            console.log(`Error while sending commande ${commandes[i].id} with name ${commandes[i].name}`);
+            console.log(`Error while sending commande ${commandes[i].id} with name ${commandes[i].name}\n${e}`);
             commandes.splice(i, 1);
             i--;
         }
