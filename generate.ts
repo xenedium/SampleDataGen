@@ -151,15 +151,20 @@ const generate = async () => {
     console.log('Sending Emplacements...');
 
     for (let i = 0; i < emplacements.length; i++) {
-        let resp = await axios({
-            method: 'post',
-            url: `${API_URL}/emplacements`,
-            data: emplacements[i],
-            headers: { 'Authorization': 'JWT ' + TOKEN },
-        });
-        clearLine();
-        process.stdout.write(`[${(i * 100 / emplacements.length).toFixed(2)}%] - Created emplacement ${resp.data.doc.id} with name ${resp.data.doc.name}\r`);
-        emplacements[i].id = resp.data.doc.id;
+        try {
+            let resp = await axios({
+                method: 'post',
+                url: `${API_URL}/emplacements`,
+                data: emplacements[i],
+                headers: { 'Authorization': 'JWT ' + TOKEN },
+            });
+            clearLine();
+            process.stdout.write(`[${(i * 100 / emplacements.length).toFixed(2)}%] - Created emplacement ${resp.data.doc.id} with name ${resp.data.doc.name}\r`);
+            emplacements[i].id = resp.data.doc.id;
+        }
+        catch (e) {
+            i--;
+        }
     }
 
     clearLine();
